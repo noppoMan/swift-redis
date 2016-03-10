@@ -1,0 +1,8 @@
+.DS_Store
+dump.rdb
+.DS_Store
+Xcode/SwiftRedis.xcodeproj/xcuserdata
+Xcode/SwiftRedis.xcodeproj/SwiftRedis.xcworkspace/xcuserdata/
+Xcode/SwiftRedis.xcodeproj/project.xcworkspace/xcuserdata
+Packages
+.build

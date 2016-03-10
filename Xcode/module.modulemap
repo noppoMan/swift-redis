@@ -1,0 +1,13 @@
+module CLibUv [system] {
+    header "/usr/local/include/uv.h"
+    link "uv"
+    export *
+}
+
+module CHiredis [system] {
+    header "/usr/local/include/hiredis/hiredis.h"
+    header "/usr/local/include/hiredis/async.h"
+    header "/usr/local/include/hiredis/adapters/libuv.h"
+    link "hiredis"
+    export *
+}
