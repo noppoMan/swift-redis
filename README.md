@@ -68,6 +68,8 @@ SwiftRedis.command(con, command: .SET("test", "foobar")) { result in
     // Close the connection
     SwiftRedis.close(con)
 }
+
+uv_run(uv_default_loop(), UV_RUN_DEFAULT)
 ```
 
 ## License
