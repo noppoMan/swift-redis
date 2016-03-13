@@ -131,6 +131,14 @@ extension Commands {
         case .DEL(let keys):
             cmd = ["DEL"]
             cmd.appendContentsOf(keys)
+        case .EXPIRE(let key, let ttl, let bool):
+            cmd = ["EXPIRE", key, "\(ttl)", "\(bool)"]
+        case .SETEX(let key, let ttl, let val):
+            cmd = ["SETEX", key, "\(ttl)", val]
+        case .PSETEX(let key, let ttl, let val):
+            cmd = ["PSETEX", key, "\(ttl)", val]
+        case .RAW(let command):
+            cmd = command
         default:
             cmd = []
         }
