@@ -27,7 +27,7 @@ public struct Connection {
 
         if ctx.memory.err > 0 {
             let message = String.fromCString(ctx.memory.errstr)!
-            throw Error.ConnectionFaild(message)
+            throw Error.ConnectionFailure(message)
         }
         
         // atach loop
@@ -45,7 +45,7 @@ public struct Connection {
             redisAsyncSetConnectCallback(ctx) { c, status in
                 let ctx = UnsafeMutablePointer<Context>(c.memory.data)
                 if status != REDIS_OK {
-                    let error = Error.ConnectionFaild(String.fromCString(c.memory.errstr)!)
+                    let error = Error.ConnectionFailure(String.fromCString(c.memory.errstr)!)
                     return ctx.memory.onConnect(.Error(error))
                 }
                 ctx.memory.onConnect(.Success)
@@ -61,7 +61,7 @@ public struct Connection {
                 
                 let ctx = UnsafeMutablePointer<Context>(c.memory.data)
                 if status != REDIS_OK {
-                    let error = Error.ConnectionFaild(String.fromCString(c.memory.errstr)!)
+                    let error = Error.ConnectionFailure(String.fromCString(c.memory.errstr)!)
                     return ctx.memory.onDisconnect(.Error(error))
                 }
                 ctx.memory.onDisconnect(.Success)

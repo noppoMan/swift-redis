@@ -7,12 +7,15 @@
 //
 
 enum Error: ErrorType, CustomStringConvertible {
-    case ConnectionFaild(String)
+    case ConnectionFailure(String)
     case UnImplemented
+    case CommandFailure(String)
     
     var description: String {
         switch(self){
-        case .ConnectionFaild(let message):
+        case .ConnectionFailure(let message):
+            return message
+        case .CommandFailure(let message):
             return message
         case .UnImplemented:
             return "UnImplemented"

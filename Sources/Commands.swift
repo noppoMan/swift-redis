@@ -25,7 +25,8 @@ public enum Commands: CustomStringConvertible {
     case MGET(Array<String>)
     case MSET(Array<(String, String)>)
     case MSETNX(Array<(String, String)>)
-    case SETEX(String, Int, String, Bool)
+    case SETEX(String, Int, String)
+    case PSETEX(String, Int, String)
     
     case SETNX(String, String)
     case SETRANGE(String, Int, String)
@@ -107,26 +108,31 @@ public enum Commands: CustomStringConvertible {
     case PING
     case SELECT(Int)
     
-    case RAW(String)
+    case RAW([String])
 }
 
 
 
 extension Commands {
     public var description: String {
-        let cmd: String
+        return argv.joinWithSeparator(" ")
+    }
+    
+    public var argv: [String] {
+        var cmd: [String]
         
         switch(self) {
         case .PING:
-            cmd = "PING"
+            cmd = ["PING"]
         case .SET(let key, let val):
-            cmd = "SET \(key) \(val)"
+            cmd = ["SET", key, val]
         case .GET(let key):
-            cmd = "GET \(key)"
+            cmd = ["GET", key]
         case .DEL(let keys):
-            cmd = "DEL \(keys.joinWithSeparator(" "))"
+            cmd = ["DEL"]
+            cmd.appendContentsOf(keys)
         default:
-            cmd = ""
+            cmd = []
         }
         
         return cmd
