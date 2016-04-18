@@ -44,7 +44,7 @@ private func asyncSendCommand(connection: Connection, command: [String], complet
     )
 }
 
-public struct SwiftRedis {
+public struct Redis {
     
     public static func command(connection: Connection, command: Commands, completion: GenericResult<String> -> () = { _ in}) {
         

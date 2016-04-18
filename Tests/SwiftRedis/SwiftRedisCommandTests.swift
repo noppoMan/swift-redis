@@ -1,6 +1,6 @@
 //
-//  SwiftRedisTests.swift
-//  SwiftRedis
+//  RedisTests.swift
+//  Redis
 //
 //  Created by Yuki Takei on 3/11/16.
 //  Copyright © 2016 MikeTOKYO. All rights reserved.
@@ -12,7 +12,7 @@ import CLibUv
 
 let key = "swift-redis-test-key"
 
-class SwiftRedisCommandTests: XCTestCase {
+class RedisCommandTests: XCTestCase {
     
     func testConnect(){
         waitUntil(description: "connect") { done in
@@ -30,7 +30,7 @@ class SwiftRedisCommandTests: XCTestCase {
                 }
                 
                 setTimeout(100) {
-                    SwiftRedis.close(con)
+                    Redis.close(con)
                 }
                 
                 uv_run(loop, UV_RUN_DEFAULT)
@@ -49,13 +49,13 @@ class SwiftRedisCommandTests: XCTestCase {
             do {
                 let con = try Connection(loop: loop)
                 
-                SwiftRedis.command(con, command: .PING) { result in
+                Redis.command(con, command: .PING) { result in
                     
                     if case .Success(let reply) = result {
                         XCTAssertEqual(reply, "PONG")
                     }
                 
-                    SwiftRedis.close(con)
+                    Redis.close(con)
                 }
                 
                 con.on(.Disconnect) { result in
@@ -78,17 +78,17 @@ class SwiftRedisCommandTests: XCTestCase {
             do {
                 let con = try Connection(loop: loop)
                 
-                SwiftRedis.command(con, command: .SET(key, "foobar")) { result in
+                Redis.command(con, command: .SET(key, "foobar")) { result in
                     if case .Success(let rep) = result {
                         XCTAssertEqual(rep, "OK")
                     }
-                    SwiftRedis.command(con, command: .GET(key)) { result in
+                    Redis.command(con, command: .GET(key)) { result in
                         if case .Success(let rep) = result {
                             XCTAssertEqual(rep, "foobar")
                         }
-                        SwiftRedis.command(con, command: .DEL([key])) { result in
+                        Redis.command(con, command: .DEL([key])) { result in
                             if case .Success(_) = result {
-                                SwiftRedis.close(con)
+                                Redis.close(con)
                             }
                         }
                     }
@@ -114,17 +114,17 @@ class SwiftRedisCommandTests: XCTestCase {
             do {
                 let con = try Connection(loop: loop)
                 
-                SwiftRedis.command(con, command: .SET(key, "{\"foo\": \"bar\"}")) { result in
+                Redis.command(con, command: .SET(key, "{\"foo\": \"bar\"}")) { result in
                     if case .Success(let rep) = result {
                         XCTAssertEqual(rep, "OK")
                     }
-                    SwiftRedis.command(con, command: .GET(key)) { result in
+                    Redis.command(con, command: .GET(key)) { result in
                         if case .Success(let rep) = result {
                             XCTAssertEqual(rep, "{\"foo\": \"bar\"}")
                         }
-                        SwiftRedis.command(con, command: .DEL([key])) { result in
+                        Redis.command(con, command: .DEL([key])) { result in
                             if case .Success(_) = result {
-                                SwiftRedis.close(con)
+                                Redis.close(con)
                             }
                         }
                     }
@@ -150,7 +150,7 @@ class SwiftRedisCommandTests: XCTestCase {
             do {
                 let con = try Connection(loop: loop)
                 
-                SwiftRedis.command(con, command: .RAW([])) { result in
+                Redis.command(con, command: .RAW([])) { result in
                     if case .Error(let err) = result {
                         if case Error.UnImplemented = err {
                             done()

@@ -52,7 +52,7 @@ con.on(.Disconnect) { result in
 }
 
 // PING
-SwiftRedis.command(con, command: .PING) { result in
+Redis.command(con, command: .PING) { result in
     if case .Success(let rep) = result {
       print(rep) // => PONG
     }
@@ -60,13 +60,13 @@ SwiftRedis.command(con, command: .PING) { result in
 
 
 // SET
-SwiftRedis.command(con, command: .SET("test", "foobar")) { result in
+Redis.command(con, command: .SET("test", "foobar")) { result in
     if case .Success(let rep) = result {
       print(rep) // => OK
     }
 
     // Close the connection
-    SwiftRedis.close(con)
+    Redis.close(con)
 }
 
 uv_run(uv_default_loop(), UV_RUN_DEFAULT)
