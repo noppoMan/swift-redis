@@ -6,7 +6,7 @@
 //  Copyright © 2016 MikeTOKYO. All rights reserved.
 //
 
-enum Error: ErrorType, CustomStringConvertible {
+enum Error: ErrorProtocol, CustomStringConvertible {
     case ConnectionFailure(String)
     case UnImplemented
     case CommandFailure(String)
