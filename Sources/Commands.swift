@@ -115,7 +115,7 @@ public enum Commands: CustomStringConvertible {
 
 extension Commands {
     public var description: String {
-        return argv.joinWithSeparator(" ")
+        return argv.joined(separator: " ")
     }
     
     public var argv: [String] {
@@ -130,7 +130,7 @@ extension Commands {
             cmd = ["GET", key]
         case .DEL(let keys):
             cmd = ["DEL"]
-            cmd.appendContentsOf(keys)
+            cmd.append(contentsOf: keys)
         case .EXPIRE(let key, let ttl, let bool):
             cmd = ["EXPIRE", key, "\(ttl)", "\(bool)"]
         case .SETEX(let key, let ttl, let val):

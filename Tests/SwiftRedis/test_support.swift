@@ -11,21 +11,41 @@ import Foundation
 import CLibUv
 
 internal func setTimeout(delay: UInt = 0, callback: () -> ()){
-    let handle = UnsafeMutablePointer<uv_timer_t>.alloc(1)
+    let handle = UnsafeMutablePointer<uv_timer_t>(allocatingCapacity: 1)
     
-    handle.memory.data = retainedVoidPointer(callback)
+    handle.pointee.data = retainedVoidPointer(callback)
     uv_timer_init(uv_default_loop(), handle)
     uv_timer_start(handle, { handle in
         defer {
-            handle.destroy()
-            handle.dealloc(1)
+            handle.deinitialize()
+            handle.deallocateCapacity(1)
         }
         uv_timer_stop(handle)
-        let cb: () -> () = releaseVoidPointer(handle.memory.data)!
+        let cb: () -> () = releaseVoidPointer(handle.pointee.data)!
         cb()
     }, UInt64(delay), 0)
 }
 
+final class Box<A> {
+    let unbox: A
+    init(_ value: A) { unbox = value }
+}
+
+func retainedVoidPointer<A>(x: A?) -> UnsafeMutablePointer<Void> {
+    guard let value = x else { return UnsafeMutablePointer<Void>(allocatingCapacity: 0) }
+    let unmanaged = OpaquePointer(bitPattern: Unmanaged.passRetained(Box(value)))
+    return UnsafeMutablePointer(unmanaged)
+}
+
+func releaseVoidPointer<A>(x: UnsafeMutablePointer<Void>) -> A? {
+    guard x != nil else { return nil }
+    return Unmanaged<Box<A>>.fromOpaque(OpaquePointer(x)).takeRetainedValue().unbox
+}
+
+func unsafeFromVoidPointer<A>(x: UnsafeMutablePointer<Void>) -> A? {
+    guard x != nil else { return nil }
+    return Unmanaged<Box<A>>.fromOpaque(OpaquePointer(x)).takeUnretainedValue().unbox
+}
 
 private class AsynchronousTestSupporter {
     
@@ -40,14 +60,14 @@ private class AsynchronousTestSupporter {
         
         callback(done)
         
-        let runLoop = NSRunLoop.currentRunLoop()
+        let runLoop = NSRunLoop.current()
         let timeoutDate = NSDate(timeIntervalSinceNow: timeout)
         
-        while NSDate().compare(timeoutDate) == NSComparisonResult.OrderedAscending {
+        while NSDate().compare(timeoutDate) == NSComparisonResult.orderedAscending {
             if(breakFlag) {
                 break
             }
-            runLoop.runUntilDate(NSDate(timeIntervalSinceNow: 0.01))
+            runLoop.run(until: NSDate(timeIntervalSinceNow: 0.01))
         }
         
         if(!breakFlag) {

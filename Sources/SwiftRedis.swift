@@ -16,13 +16,13 @@ func redisCallbackFn(c: UnsafeMutablePointer<redisAsyncContext>, r: UnsafeMutabl
     
     var bytes = [UInt8]()
     
-    for i in 0.stride(to: Int(reply.memory.len), by: 1) {
-        bytes.append(UInt8(bitPattern: reply.memory.str[i]))
+    for i in stride(from: 0, to: Int(reply.pointee.len), by: 1) {
+        bytes.append(UInt8(bitPattern: reply.pointee.str[i]))
     }
     
     let repStr = bytes2Str(bytes)
     
-    if reply.memory.type == REDIS_REPLY_ERROR {
+    if reply.pointee.type == REDIS_REPLY_ERROR {
         let error = Error.CommandFailure(repStr)
         return callback(.Error(error))
     }
