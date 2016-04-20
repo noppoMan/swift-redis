@@ -45,7 +45,7 @@ func bytes2Str(bytes: [UInt8]) -> String {
     var encodedString = ""
     var decoder = UTF8()
     var generator = bytes.makeIterator()
-    
+
     loop: while true {
         switch decoder.decode(&generator) {
         case .scalarValue(let char): encodedString.append(char)
@@ -53,12 +53,16 @@ func bytes2Str(bytes: [UInt8]) -> String {
         case .error: break loop
         }
     }
-    
+
     return encodedString
 }
 
 extension String {
     var buffer: UnsafePointer<Int8> {
-        return NSString(string: self).utf8String
+#if os(Linux)
+    return NSString(string: self).UTF8String
+#else
+    return NSString(string: self).utf8String
+#endif
     }
 }
