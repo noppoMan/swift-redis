@@ -8,29 +8,29 @@
 
 import CHiredis
 
-func redisCallbackFn(c: UnsafeMutablePointer<redisAsyncContext>, r: UnsafeMutablePointer<Void>, privdata: UnsafeMutablePointer<Void>){
+func redisCallbackFn(c: UnsafeMutablePointer<redisAsyncContext>!, r: UnsafeMutablePointer<Void>!, privdata: UnsafeMutablePointer<Void>!){
     
     let callback: GenericResult<String> -> () = releaseVoidPointer(privdata)!
     
-    let reply = UnsafeMutablePointer<redisReply>(r)
-    
-    var bytes = [UInt8]()
-    
-    for i in stride(from: 0, to: Int(reply.pointee.len), by: 1) {
-        bytes.append(UInt8(bitPattern: reply.pointee.str[i]))
+    if let reply = UnsafeMutablePointer<redisReply>(r) {
+        var bytes = [UInt8]()
+        
+        for i in stride(from: 0, to: Int(reply.pointee.len), by: 1) {
+            bytes.append(UInt8(bitPattern: reply.pointee.str[i]))
+        }
+        
+        let repStr = bytes2Str(bytes)
+        
+        if reply.pointee.type == REDIS_REPLY_ERROR {
+            let error = Error.CommandFailure(repStr)
+            return callback(.Error(error))
+        }
+        
+        callback(.Success(repStr))
     }
-    
-    let repStr = bytes2Str(bytes)
-    
-    if reply.pointee.type == REDIS_REPLY_ERROR {
-        let error = Error.CommandFailure(repStr)
-        return callback(.Error(error))
-    }
-    
-    callback(.Success(repStr))
 }
 
-private func asyncSendCommand(connection: Connection, command: [String], completion: GenericResult<String> -> () = { _ in }) {
+private func asyncSendCommand(_ connection: Connection, command: [String], completion: GenericResult<String> -> () = { _ in }) {
     
     let privdata = retainedVoidPointer(completion)
     
@@ -46,7 +46,7 @@ private func asyncSendCommand(connection: Connection, command: [String], complet
 
 public struct Redis {
     
-    public static func command(connection: Connection, command: Commands, completion: GenericResult<String> -> () = { _ in}) {
+    public static func command(_ connection: Connection, command: Commands, completion: GenericResult<String> -> () = { _ in}) {
         
         if command.argv.count == 0 {
             return completion(.Error(Error.UnImplemented))
@@ -56,7 +56,7 @@ public struct Redis {
         
     }
     
-    public static func close(connection: Connection){
+    public static func close(_ connection: Connection){
         redisAsyncDisconnect(connection.ctx)
     }
     

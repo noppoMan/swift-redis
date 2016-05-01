@@ -25,23 +25,27 @@ final class Box<A> {
     init(_ value: A) { unbox = value }
 }
 
-func retainedVoidPointer<A>(x: A?) -> UnsafeMutablePointer<Void> {
+func retainedVoidPointer<A>(_ x: A?) -> UnsafeMutablePointer<Void> {
     guard let value = x else { return UnsafeMutablePointer<Void>(allocatingCapacity: 0) }
     let unmanaged = OpaquePointer(bitPattern: Unmanaged.passRetained(Box(value)))
     return UnsafeMutablePointer(unmanaged)
 }
 
-func releaseVoidPointer<A>(x: UnsafeMutablePointer<Void>) -> A? {
-    guard x != nil else { return nil }
+func releaseVoidPointer<A>(_ x: UnsafeMutablePointer<Void>?) -> A? {
+    guard let x = x else {
+        return nil
+    }
     return Unmanaged<Box<A>>.fromOpaque(OpaquePointer(x)).takeRetainedValue().unbox
 }
 
-func unsafeFromVoidPointer<A>(x: UnsafeMutablePointer<Void>) -> A? {
-    guard x != nil else { return nil }
+func unsafeFromVoidPointer<A>(_ x: UnsafeMutablePointer<Void>?) -> A? {
+    guard let x = x else {
+        return nil
+    }
     return Unmanaged<Box<A>>.fromOpaque(OpaquePointer(x)).takeUnretainedValue().unbox
 }
 
-func bytes2Str(bytes: [UInt8]) -> String {
+func bytes2Str(_ bytes: [UInt8]) -> String {
     var encodedString = ""
     var decoder = UTF8()
     var generator = bytes.makeIterator()
@@ -58,7 +62,7 @@ func bytes2Str(bytes: [UInt8]) -> String {
 }
 
 extension String {
-    var buffer: UnsafePointer<Int8> {
+    var buffer: UnsafePointer<Int8>? {
 #if os(Linux)
     return NSString(string: self).UTF8String
 #else

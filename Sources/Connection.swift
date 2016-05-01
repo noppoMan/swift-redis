@@ -38,17 +38,18 @@ public struct Connection {
         ctx.pointee.data = UnsafeMutablePointer(_ctx)
     }
     
-    public func on(evt: ConnectionEvent, callback: Result -> ()) {
+    public func on(_ evt: ConnectionEvent, callback: Result -> ()) {
         switch(evt) {
         case .Connect:
             UnsafeMutablePointer<Context>(ctx.pointee.data).pointee.onConnect = callback
             redisAsyncSetConnectCallback(ctx) { c, status in
-                let ctx = UnsafeMutablePointer<Context>(c.pointee.data)
-                if status != REDIS_OK {
-                    let error = Error.ConnectionFailure(String(validatingUTF8: c.pointee.errstr)!)
-                    return ctx.pointee.onConnect(.Error(error))
+                if let ctx = UnsafeMutablePointer<Context>(c.pointee.data) {
+                    if status != REDIS_OK {
+                        let error = Error.ConnectionFailure(String(validatingUTF8: c.pointee.errstr)!)
+                        return ctx.pointee.onConnect(.Error(error))
+                    }
+                    ctx.pointee.onConnect(.Success)
                 }
-                ctx.pointee.onConnect(.Success)
             }
         case .Disconnect:
             UnsafeMutablePointer<Context>(ctx.pointee.data).pointee.onDisconnect = callback
@@ -59,12 +60,13 @@ public struct Connection {
                     c.pointee.data.deallocateCapacity(1)
                 }
                 
-                let ctx = UnsafeMutablePointer<Context>(c.pointee.data)
-                if status != REDIS_OK {
-                    let error = Error.ConnectionFailure(String(validatingUTF8: c.pointee.errstr)!)
-                    return ctx.pointee.onDisconnect(.Error(error))
+                if let ctx = UnsafeMutablePointer<Context>(c.pointee.data) {
+                    if status != REDIS_OK {
+                        let error = Error.ConnectionFailure(String(validatingUTF8: c.pointee.errstr)!)
+                        return ctx.pointee.onDisconnect(.Error(error))
+                    }
+                    ctx.pointee.onDisconnect(.Success)
                 }
-                ctx.pointee.onDisconnect(.Success)
             }
         }
     }

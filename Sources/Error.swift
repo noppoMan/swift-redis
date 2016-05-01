@@ -9,6 +9,7 @@
 enum Error: ErrorProtocol, CustomStringConvertible {
     case ConnectionFailure(String)
     case UnImplemented
+    case Unexpexted
     case CommandFailure(String)
     
     var description: String {
@@ -19,6 +20,8 @@ enum Error: ErrorProtocol, CustomStringConvertible {
             return message
         case .UnImplemented:
             return "UnImplemented"
+        case .Unexpexted:
+            return "Unexpexted"
         }
     }
 }

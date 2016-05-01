@@ -10,7 +10,7 @@ import XCTest
 import Foundation
 import CLibUv
 
-internal func setTimeout(delay: UInt = 0, callback: () -> ()){
+internal func setTimeout(_ delay: UInt = 0, callback: () -> ()){
     let handle = UnsafeMutablePointer<uv_timer_t>(allocatingCapacity: 1)
     
     handle.pointee.data = retainedVoidPointer(callback)
@@ -31,21 +31,26 @@ final class Box<A> {
     init(_ value: A) { unbox = value }
 }
 
-func retainedVoidPointer<A>(x: A?) -> UnsafeMutablePointer<Void> {
+func retainedVoidPointer<A>(_ x: A?) -> UnsafeMutablePointer<Void> {
     guard let value = x else { return UnsafeMutablePointer<Void>(allocatingCapacity: 0) }
     let unmanaged = OpaquePointer(bitPattern: Unmanaged.passRetained(Box(value)))
     return UnsafeMutablePointer(unmanaged)
 }
 
-func releaseVoidPointer<A>(x: UnsafeMutablePointer<Void>) -> A? {
-    guard x != nil else { return nil }
+func releaseVoidPointer<A>(_ x: UnsafeMutablePointer<Void>?) -> A? {
+    guard let x = x else {
+        return nil
+    }
     return Unmanaged<Box<A>>.fromOpaque(OpaquePointer(x)).takeRetainedValue().unbox
 }
 
-func unsafeFromVoidPointer<A>(x: UnsafeMutablePointer<Void>) -> A? {
-    guard x != nil else { return nil }
+func unsafeFromVoidPointer<A>(_ x: UnsafeMutablePointer<Void>?) -> A? {
+    guard let x = x else {
+        return nil
+    }
     return Unmanaged<Box<A>>.fromOpaque(OpaquePointer(x)).takeUnretainedValue().unbox
 }
+
 
 private class AsynchronousTestSupporter {
     
