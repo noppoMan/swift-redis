@@ -6,7 +6,7 @@ An asynchronous redis client for Swift with libuv
 * [libuv](https://github.com/libuv/libuv)
 * [hiredis](https://github.com/redis/hiredis)
 
-## Installation
+## Installation 
 
 ### Linux
 ```sh
@@ -70,7 +70,7 @@ Redis.command(con, command: .SET("test", "foobar")) { result in
 }
 
 // List type replying
-Redis.command(con, command: .RAW(["SORT", "*"])) { result in
+Redis.command(con, command: .RAW(["KEYS", "*"])) { result in
     if case .Success(let rep) = result {
       print(rep as? [String]) // => ["foo", "bar"]
     }
