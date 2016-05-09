@@ -45,22 +45,6 @@ func unsafeFromVoidPointer<A>(_ x: UnsafeMutablePointer<Void>?) -> A? {
     return Unmanaged<Box<A>>.fromOpaque(OpaquePointer(x)).takeUnretainedValue().unbox
 }
 
-func bytes2Str(_ bytes: [UInt8]) -> String {
-    var encodedString = ""
-    var decoder = UTF8()
-    var generator = bytes.makeIterator()
-
-    loop: while true {
-        switch decoder.decode(&generator) {
-        case .scalarValue(let char): encodedString.append(char)
-        case .emptyInput: break loop
-        case .error: break loop
-        }
-    }
-
-    return encodedString
-}
-
 extension String {
     var buffer: UnsafePointer<Int8>? {
 #if os(Linux)
@@ -68,5 +52,21 @@ extension String {
 #else
     return NSString(string: self).utf8String
 #endif
+    }
+    
+    init(bytes: [UInt8]){
+        var encodedString = ""
+        var decoder = UTF8()
+        var generator = bytes.makeIterator()
+        
+        loop: while true {
+            switch decoder.decode(&generator) {
+            case .scalarValue(let char): encodedString.append(char)
+            case .emptyInput: break loop
+            case .error: break loop
+            }
+        }
+        
+        self.init(encodedString)
     }
 }
