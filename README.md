@@ -54,7 +54,7 @@ con.on(.Disconnect) { result in
 // PING
 Redis.command(con, command: .PING) { result in
     if case .Success(let rep) = result {
-      print(rep) // => PONG
+      print(rep as? String) // => PONG
     }
 }
 
@@ -62,7 +62,17 @@ Redis.command(con, command: .PING) { result in
 // SET
 Redis.command(con, command: .SET("test", "foobar")) { result in
     if case .Success(let rep) = result {
-      print(rep) // => OK
+      print(rep as? String) // => OK
+    }
+
+    // Close the connection
+    Redis.close(con)
+}
+
+// List type replying
+Redis.command(con, command: .RAW(["SORT", "*"])) { result in
+    if case .Success(let rep) = result {
+      print(rep as? [String]) // => ["foo", "bar"]
     }
 
     // Close the connection
