@@ -115,10 +115,14 @@ public enum Commands: CustomStringConvertible {
 
 extension Commands {
     public var description: String {
-        return argv.joined(separator: " ")
+        do {
+            return try parse().joined(separator: " ")
+        } catch {
+            return ""
+        }
     }
     
-    public var argv: [String] {
+    public func parse() throws -> [String] {
         var cmd: [String]
         
         switch(self) {
@@ -140,7 +144,7 @@ extension Commands {
         case .RAW(let command):
             cmd = command
         default:
-            cmd = []
+            throw Error.UnImplemented
         }
         
         return cmd

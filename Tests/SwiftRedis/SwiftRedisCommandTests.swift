@@ -52,7 +52,7 @@ class RedisCommandTests: XCTestCase {
                 Redis.command(con, command: .PING) { result in
                     
                     if case .Success(let reply) = result {
-                        XCTAssertEqual(reply, "PONG")
+                        XCTAssertEqual(reply as? String, "PONG")
                     }
                 
                     Redis.close(con)
@@ -80,11 +80,11 @@ class RedisCommandTests: XCTestCase {
                 
                 Redis.command(con, command: .SET(key, "foobar")) { result in
                     if case .Success(let rep) = result {
-                        XCTAssertEqual(rep, "OK")
+                        XCTAssertEqual(rep as? String, "OK")
                     }
                     Redis.command(con, command: .GET(key)) { result in
                         if case .Success(let rep) = result {
-                            XCTAssertEqual(rep, "foobar")
+                            XCTAssertEqual(rep as? String, "foobar")
                         }
                         Redis.command(con, command: .DEL([key])) { result in
                             if case .Success(_) = result {
@@ -116,11 +116,11 @@ class RedisCommandTests: XCTestCase {
                 
                 Redis.command(con, command: .SET(key, "{\"foo\": \"bar\"}")) { result in
                     if case .Success(let rep) = result {
-                        XCTAssertEqual(rep, "OK")
+                        XCTAssertEqual(rep as? String, "OK")
                     }
                     Redis.command(con, command: .GET(key)) { result in
                         if case .Success(let rep) = result {
-                            XCTAssertEqual(rep, "{\"foo\": \"bar\"}")
+                            XCTAssertEqual(rep as? String, "{\"foo\": \"bar\"}")
                         }
                         Redis.command(con, command: .DEL([key])) { result in
                             if case .Success(_) = result {
@@ -150,7 +150,7 @@ class RedisCommandTests: XCTestCase {
             do {
                 let con = try Connection(loop: loop)
                 
-                Redis.command(con, command: .RAW([])) { result in
+                Redis.command(con, command: .HSET("key", "foo", "bar")) { result in
                     if case .Error(let err) = result {
                         if case Error.UnImplemented = err {
                             done()
