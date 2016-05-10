@@ -10,8 +10,8 @@ import CHiredis
 import CLibUv
 
 private struct Context {
-    var onConnect: Result -> () = { _ in}
-    var onDisconnect: Result -> () = { _ in }
+    var onConnect: (Result) -> () = { _ in}
+    var onDisconnect: (Result) -> () = { _ in }
 }
 
 public enum ConnectionEvent {
@@ -38,14 +38,14 @@ public struct Connection {
         ctx.pointee.data = UnsafeMutablePointer(_ctx)
     }
     
-    public func on(_ evt: ConnectionEvent, callback: Result -> ()) {
+    public func on(_ evt: ConnectionEvent, callback: (Result) -> ()) {
         switch(evt) {
         case .Connect:
             UnsafeMutablePointer<Context>(ctx.pointee.data).pointee.onConnect = callback
-            redisAsyncSetConnectCallback(ctx) { c, status in
-                if let ctx = UnsafeMutablePointer<Context>(c.pointee.data) {
+            redisAsyncSetConnectCallback(ctx) { context, status in
+                if let context = context, ctx = UnsafeMutablePointer<Context>(context.pointee.data) {
                     if status != REDIS_OK {
-                        let error = Error.ConnectionFailure(String(validatingUTF8: c.pointee.errstr)!)
+                        let error = Error.ConnectionFailure(String(validatingUTF8: context.pointee.errstr)!)
                         return ctx.pointee.onConnect(.Error(error))
                     }
                     ctx.pointee.onConnect(.Success)
@@ -53,16 +53,16 @@ public struct Connection {
             }
         case .Disconnect:
             UnsafeMutablePointer<Context>(ctx.pointee.data).pointee.onDisconnect = callback
-            redisAsyncSetDisconnectCallback(ctx) { c, status in
-                // release context
-                defer {
-                    c.pointee.data.deinitialize()
-                    c.pointee.data.deallocateCapacity(1)
-                }
-                
-                if let ctx = UnsafeMutablePointer<Context>(c.pointee.data) {
+            redisAsyncSetDisconnectCallback(ctx) { context, status in
+                if let context = context, ctx = UnsafeMutablePointer<Context>(context.pointee.data) {
+                    // release context
+                    defer {
+                        context.pointee.data.deinitialize()
+                        context.pointee.data.deallocateCapacity(1)
+                    }
+                    
                     if status != REDIS_OK {
-                        let error = Error.ConnectionFailure(String(validatingUTF8: c.pointee.errstr)!)
+                        let error = Error.ConnectionFailure(String(validatingUTF8: context.pointee.errstr)!)
                         return ctx.pointee.onDisconnect(.Error(error))
                     }
                     ctx.pointee.onDisconnect(.Success)

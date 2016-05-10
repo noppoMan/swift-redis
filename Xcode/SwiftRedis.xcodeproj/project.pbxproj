@@ -7,18 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		_LinkFileRef_SwiftRedis /* libSwiftRedis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = "_____Product_SwiftRedis" /* libSwiftRedis.dylib */; };
+		_LinkFileRef_SwiftRedis_via_SwiftRedisTestSuite /* libSwiftRedis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = "_____Product_SwiftRedis" /* libSwiftRedis.dylib */; };
 		__src_cc_ref_Sources/Commands.swift /* Commands.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/Commands.swift /* Commands.swift */; };
 		__src_cc_ref_Sources/Connection.swift /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/Connection.swift /* Connection.swift */; };
 		__src_cc_ref_Sources/Error.swift /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/Error.swift /* Error.swift */; };
-		__src_cc_ref_Sources/SwiftRedis.swift /* SwiftRedis.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/SwiftRedis.swift /* SwiftRedis.swift */; };
+		__src_cc_ref_Sources/Redis.swift /* Redis.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/Redis.swift /* Redis.swift */; };
 		__src_cc_ref_Sources/support.swift /* support.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/support.swift /* support.swift */; };
 		__src_cc_ref_Tests/SwiftRedis/SwiftRedisCommandTests.swift /* SwiftRedisCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Tests/SwiftRedis/SwiftRedisCommandTests.swift /* SwiftRedisCommandTests.swift */; };
 		__src_cc_ref_Tests/SwiftRedis/test_support.swift /* test_support.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Tests/SwiftRedis/test_support.swift /* test_support.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		B64AE7601CD638B300518A8B /* PBXContainerItemProxy */ = {
+		B637ED7F1CE2344B00B4184E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = __RootObject_ /* Project object */;
 			proxyType = 1;
@@ -28,16 +28,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		__PBXFileRef_Package.swift /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = "/Users/yuki/Documents/program/oss/Slimane/swift-redis/Package.swift"; sourceTree = "<group>"; };
+		__PBXFileRef_Package.swift /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Sources/Commands.swift /* Commands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Commands.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Sources/Connection.swift /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Sources/Error.swift /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
-		__PBXFileRef_Sources/SwiftRedis.swift /* SwiftRedis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftRedis.swift; sourceTree = "<group>"; };
+		__PBXFileRef_Sources/Redis.swift /* Redis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Redis.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Sources/support.swift /* support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = support.swift; sourceTree = "<group>"; };
+		__PBXFileRef_SwiftRedis.xcodeproj/Configs/Project.xcconfig /* Project.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Project.xcconfig; path = SwiftRedis.xcodeproj/Configs/Project.xcconfig; sourceTree = "<group>"; };
 		__PBXFileRef_Tests/SwiftRedis/SwiftRedisCommandTests.swift /* SwiftRedisCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftRedisCommandTests.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Tests/SwiftRedis/test_support.swift /* test_support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test_support.swift; sourceTree = "<group>"; };
 		"_____Product_SwiftRedis" /* libSwiftRedis.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libSwiftRedis.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		"_____Product_SwiftRedisTestSuite" /* SwiftRedisTestSuite.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; name = SwiftRedisTestSuite.xctest; path = SwiftRedis.testsuite.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		"_____Product_SwiftRedisTestSuite" /* SwiftRedisTestSuite.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = SwiftRedisTestSuite.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,20 +53,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
-				_LinkFileRef_SwiftRedis /* libSwiftRedis.dylib in Frameworks */,
+				_LinkFileRef_SwiftRedis_via_SwiftRedisTestSuite /* libSwiftRedis.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		Dependencies_ /* Dependencies */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Dependencies;
-			sourceTree = "<group>";
-		};
 		TestProducts_ /* Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -78,8 +72,8 @@
 			isa = PBXGroup;
 			children = (
 				__PBXFileRef_Package.swift /* Package.swift */,
+				"_____Configs_" /* Configs */,
 				"_____Sources_" /* Sources */,
-				Dependencies_ /* Dependencies */,
 				"_______Tests_" /* Tests */,
 				"____Products_" /* Products */,
 			);
@@ -92,6 +86,14 @@
 				"_____Product_SwiftRedis" /* libSwiftRedis.dylib */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		"_____Configs_" /* Configs */ = {
+			isa = PBXGroup;
+			children = (
+				__PBXFileRef_SwiftRedis.xcodeproj/Configs/Project.xcconfig /* Project.xcconfig */,
+			);
+			name = Configs;
 			sourceTree = "<group>";
 		};
 		"_____Sources_" /* Sources */ = {
@@ -108,27 +110,27 @@
 				__PBXFileRef_Sources/Commands.swift /* Commands.swift */,
 				__PBXFileRef_Sources/Connection.swift /* Connection.swift */,
 				__PBXFileRef_Sources/Error.swift /* Error.swift */,
+				__PBXFileRef_Sources/Redis.swift /* Redis.swift */,
 				__PBXFileRef_Sources/support.swift /* support.swift */,
-				__PBXFileRef_Sources/SwiftRedis.swift /* SwiftRedis.swift */,
 			);
 			name = SwiftRedis;
 			path = ../Sources;
 			sourceTree = "<group>";
 		};
-		"_______Group_SwiftRedisTestSuite" /* SwiftRedis.testsuite */ = {
+		"_______Group_SwiftRedisTestSuite" /* SwiftRedisTestSuite */ = {
 			isa = PBXGroup;
 			children = (
 				__PBXFileRef_Tests/SwiftRedis/SwiftRedisCommandTests.swift /* SwiftRedisCommandTests.swift */,
 				__PBXFileRef_Tests/SwiftRedis/test_support.swift /* test_support.swift */,
 			);
-			name = SwiftRedis.testsuite;
+			name = SwiftRedisTestSuite;
 			path = ../Tests/SwiftRedis;
 			sourceTree = "<group>";
 		};
 		"_______Tests_" /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				"_______Group_SwiftRedisTestSuite" /* SwiftRedis.testsuite */,
+				"_______Group_SwiftRedisTestSuite" /* SwiftRedisTestSuite */,
 			);
 			name = Tests;
 			sourceTree = "<group>";
@@ -152,9 +154,9 @@
 			productReference = "_____Product_SwiftRedis" /* libSwiftRedis.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
-		"______Target_SwiftRedisTestSuite" /* SwiftRedis.testsuite */ = {
+		"______Target_SwiftRedisTestSuite" /* SwiftRedisTestSuite */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = "_______Confs_SwiftRedisTestSuite" /* Build configuration list for PBXNativeTarget "SwiftRedis.testsuite" */;
+			buildConfigurationList = "_______Confs_SwiftRedisTestSuite" /* Build configuration list for PBXNativeTarget "SwiftRedisTestSuite" */;
 			buildPhases = (
 				CompilePhase_SwiftRedisTestSuite /* Sources */,
 				"___LinkPhase_SwiftRedisTestSuite" /* Frameworks */,
@@ -164,7 +166,7 @@
 			dependencies = (
 				__Dependency_SwiftRedis /* PBXTargetDependency */,
 			);
-			name = SwiftRedis.testsuite;
+			name = SwiftRedisTestSuite;
 			productName = SwiftRedisTestSuite;
 			productReference = "_____Product_SwiftRedisTestSuite" /* SwiftRedisTestSuite.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -190,7 +192,7 @@
 			projectRoot = "";
 			targets = (
 				"______Target_SwiftRedis" /* SwiftRedis */,
-				"______Target_SwiftRedisTestSuite" /* SwiftRedis.testsuite */,
+				"______Target_SwiftRedisTestSuite" /* SwiftRedisTestSuite */,
 			);
 		};
 /* End PBXProject section */
@@ -203,8 +205,8 @@
 				__src_cc_ref_Sources/Commands.swift /* Commands.swift in Sources */,
 				__src_cc_ref_Sources/Connection.swift /* Connection.swift in Sources */,
 				__src_cc_ref_Sources/Error.swift /* Error.swift in Sources */,
+				__src_cc_ref_Sources/Redis.swift /* Redis.swift in Sources */,
 				__src_cc_ref_Sources/support.swift /* support.swift in Sources */,
-				__src_cc_ref_Sources/SwiftRedis.swift /* SwiftRedis.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,7 +225,7 @@
 		__Dependency_SwiftRedis /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = "______Target_SwiftRedis" /* SwiftRedis */;
-			targetProxy = B64AE7601CD638B300518A8B /* PBXContainerItemProxy */;
+			targetProxy = B637ED7F1CE2344B00B4184E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -231,19 +233,15 @@
 		_ReleaseConf_SwiftRedis /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				DYLIB_INSTALL_NAME_BASE = "$(CONFIGURATION_BUILD_DIR)";
 				ENABLE_TESTABILITY = YES;
 				HEADER_SEARCH_PATHS = (
 					"/Users/yuki/Documents/program/oss/Slimane/swift-redis/Packages/CHiredis-0.1.0",
 					"/Users/yuki/Documents/program/oss/Slimane/swift-redis/Packages/CLibUv-0.1.0",
 				);
 				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_SWIFT_FLAGS = "-DXcode";
-				PRODUCT_MODULE_NAME = SwiftRedis;
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PRODUCT_NAME = "lib$(TARGET_NAME)";
 			};
 			name = Release;
@@ -251,38 +249,29 @@
 		_ReleaseConf_SwiftRedisTestSuite /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				HEADER_SEARCH_PATHS = (
 					"/Users/yuki/Documents/program/oss/Slimane/swift-redis/Packages/CHiredis-0.1.0",
 					"/Users/yuki/Documents/program/oss/Slimane/swift-redis/Packages/CLibUv-0.1.0",
 				);
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_SWIFT_FLAGS = "-DXcode";
-				PRODUCT_MODULE_NAME = SwiftRedisTestSuite;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
 			};
 			name = Release;
 		};
 		"___DebugConf_SwiftRedis" /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				DYLIB_INSTALL_NAME_BASE = "$(CONFIGURATION_BUILD_DIR)";
 				ENABLE_TESTABILITY = YES;
 				HEADER_SEARCH_PATHS = (
 					"/Users/yuki/Documents/program/oss/Slimane/swift-redis/Packages/CHiredis-0.1.0",
 					"/Users/yuki/Documents/program/oss/Slimane/swift-redis/Packages/CLibUv-0.1.0",
 				);
 				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_SWIFT_FLAGS = "-DXcode";
-				PRODUCT_MODULE_NAME = SwiftRedis;
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PRODUCT_NAME = "lib$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -291,31 +280,28 @@
 		"___DebugConf_SwiftRedisTestSuite" /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				HEADER_SEARCH_PATHS = (
 					"/Users/yuki/Documents/program/oss/Slimane/swift-redis/Packages/CHiredis-0.1.0",
 					"/Users/yuki/Documents/program/oss/Slimane/swift-redis/Packages/CLibUv-0.1.0",
 				);
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_SWIFT_FLAGS = "-DXcode";
-				PRODUCT_MODULE_NAME = SwiftRedisTestSuite;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		"_____Release_" /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = __PBXFileRef_SwiftRedis.xcodeproj/Configs/Project.xcconfig /* Project.xcconfig */;
 			buildSettings = {
 			};
 			name = Release;
 		};
 		"_______Debug_" /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = __PBXFileRef_SwiftRedis.xcodeproj/Configs/Project.xcconfig /* Project.xcconfig */;
 			buildSettings = {
 			};
 			name = Debug;
@@ -341,7 +327,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		"_______Confs_SwiftRedisTestSuite" /* Build configuration list for PBXNativeTarget "SwiftRedis.testsuite" */ = {
+		"_______Confs_SwiftRedisTestSuite" /* Build configuration list for PBXNativeTarget "SwiftRedisTestSuite" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				"___DebugConf_SwiftRedisTestSuite" /* Debug */,
