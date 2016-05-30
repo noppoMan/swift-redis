@@ -8,12 +8,31 @@
 
 import CHiredis
 
+
+struct RedisContext {
+    let autoRelease: Bool
+    let onReply: (GenericResult<Any>) -> ()
+    
+    init(autoRelease: Bool = true, onReply: (GenericResult<Any>) -> ()){
+        self.autoRelease = autoRelease
+        self.onReply = onReply
+    }
+}
+
 func redisCallbackFn(c: UnsafeMutablePointer<redisAsyncContext>?, r: UnsafeMutablePointer<Void>?, privdata: UnsafeMutablePointer<Void>?){
     guard let r = r, privdata = privdata else {
         return
     }
     
-    let callback: (GenericResult<Any>) -> () = releaseVoidPointer(privdata)!
+    let ctx = UnsafeMutablePointer<RedisContext>(privdata)
+    
+    // TODO It still has memory leak when the command is 'SUBSCRIBE'
+    defer {
+        if ctx.pointee.autoRelease {
+            ctx.deinitialize()
+            ctx.deallocateCapacity(1)
+        }
+    }
     
     let reply = UnsafeMutablePointer<redisReply>(r)
     let response: Any
@@ -39,27 +58,13 @@ func redisCallbackFn(c: UnsafeMutablePointer<redisAsyncContext>?, r: UnsafeMutab
         let _response = String(bytes: bytes)
         
         if reply.pointee.type == REDIS_REPLY_ERROR {
-            return callback(.Error(Error.CommandFailure(_response)))
+            return ctx.pointee.onReply(.Error(Error.CommandFailure(_response)))
         }
         
         response = _response
     }
     
-    callback(.Success(response))
-}
-
-private func asyncSendCommand(_ connection: Connection, command: [String], completion: (GenericResult<Any>) -> () = { _ in }) {
-    
-    let privdata = retainedVoidPointer(completion)
-    
-    redisAsyncCommandArgv(
-        connection.ctx,
-        redisCallbackFn,
-        UnsafeMutablePointer(privdata),
-        Int32(command.count),
-        UnsafeMutablePointer(command.map { $0.buffer }),
-        nil
-    )
+    ctx.pointee.onReply(.Success(response))
 }
 
 public struct Redis {
@@ -71,7 +76,21 @@ public struct Redis {
             if cmd.count == 0 {
                 throw Error.CommandFailure("Command should not be empty")
             }
-            asyncSendCommand(connection, command: cmd, completion: completion)
+            
+            let ctx = UnsafeMutablePointer<RedisContext>(allocatingCapacity: 1)
+            ctx.initialize(with: RedisContext(autoRelease: !command.isPermanent , onReply: completion))
+            
+            let privdata = UnsafeMutablePointer<Void>(ctx)
+            
+            redisAsyncCommandArgv(
+                connection.ctx,
+                redisCallbackFn,
+                UnsafeMutablePointer(privdata),
+                Int32(cmd.count),
+                UnsafeMutablePointer(cmd.map { $0.buffer }),
+                nil
+            )
+            
         } catch {
             completion(.Error(error))
         }

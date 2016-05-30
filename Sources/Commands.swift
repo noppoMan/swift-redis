@@ -122,6 +122,18 @@ extension Commands {
         }
     }
     
+    public var isPermanent: Bool {
+        switch self {
+        case .RAW(let command):
+            if command.count == 0 {
+                return false
+            }
+            return command[0].lowercased() == "subscribe"
+        default:
+            return false
+        }
+    }
+    
     public func parse() throws -> [String] {
         var cmd: [String]
         
