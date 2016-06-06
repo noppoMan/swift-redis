@@ -19,7 +19,7 @@ class RedisCommandTests: XCTestCase {
             let loop = uv_default_loop()
             
             do {
-                let con = try Connection(loop: loop)
+                let con = try Connection(loop: loop!)
                 
                 con.on(.Connect) { result in
                     XCTAssert(true)
@@ -47,7 +47,7 @@ class RedisCommandTests: XCTestCase {
             let loop = uv_default_loop()
             
             do {
-                let con = try Connection(loop: loop)
+                let con = try Connection(loop: loop!)
                 
                 Redis.command(con, command: .PING) { result in
                     
@@ -76,7 +76,7 @@ class RedisCommandTests: XCTestCase {
             let loop = uv_default_loop()
             
             do {
-                let con = try Connection(loop: loop)
+                let con = try Connection(loop: loop!)
                 
                 Redis.command(con, command: .SET(key, "foobar")) { result in
                     if case .Success(let rep) = result {
@@ -112,7 +112,7 @@ class RedisCommandTests: XCTestCase {
             let loop = uv_default_loop()
             
             do {
-                let con = try Connection(loop: loop)
+                let con = try Connection(loop: loop!)
                 
                 Redis.command(con, command: .SET(key, "{\"foo\": \"bar\"}")) { result in
                     if case .Success(let rep) = result {
@@ -148,7 +148,7 @@ class RedisCommandTests: XCTestCase {
             let loop = uv_default_loop()
             
             do {
-                let con = try Connection(loop: loop)
+                let con = try Connection(loop: loop!)
                 
                 Redis.command(con, command: .HSET("key", "foo", "bar")) { result in
                     if case .Error(let err) = result {
