@@ -17,11 +17,11 @@ internal func setTimeout(_ delay: UInt = 0, callback: () -> ()){
     uv_timer_init(uv_default_loop(), handle)
     uv_timer_start(handle, { handle in
         defer {
-            handle.deinitialize()
-            handle.deallocateCapacity(1)
+            handle!.deinitialize()
+            handle!.deallocateCapacity(1)
         }
         uv_timer_stop(handle)
-        let cb: () -> () = releaseVoidPointer(handle.pointee.data)!
+        let cb: () -> () = releaseVoidPointer(handle!.pointee.data)!
         cb()
     }, UInt64(delay), 0)
 }
@@ -33,7 +33,7 @@ final class Box<A> {
 
 func retainedVoidPointer<A>(_ x: A?) -> UnsafeMutablePointer<Void> {
     guard let value = x else { return UnsafeMutablePointer<Void>(allocatingCapacity: 0) }
-    let unmanaged = OpaquePointer(bitPattern: Unmanaged.passRetained(Box(value)))
+    let unmanaged = Unmanaged.passRetained(Box(value)).toOpaque()
     return UnsafeMutablePointer(unmanaged)
 }
 
@@ -41,14 +41,14 @@ func releaseVoidPointer<A>(_ x: UnsafeMutablePointer<Void>?) -> A? {
     guard let x = x else {
         return nil
     }
-    return Unmanaged<Box<A>>.fromOpaque(OpaquePointer(x)).takeRetainedValue().unbox
+    return Unmanaged<Box<A>>.fromOpaque(UnsafeMutablePointer(x)).takeRetainedValue().unbox
 }
 
 func unsafeFromVoidPointer<A>(_ x: UnsafeMutablePointer<Void>?) -> A? {
     guard let x = x else {
         return nil
     }
-    return Unmanaged<Box<A>>.fromOpaque(OpaquePointer(x)).takeUnretainedValue().unbox
+    return Unmanaged<Box<A>>.fromOpaque(UnsafeMutablePointer(x)).takeUnretainedValue().unbox
 }
 
 
