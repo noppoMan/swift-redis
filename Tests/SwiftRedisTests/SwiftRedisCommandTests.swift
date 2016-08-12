@@ -21,11 +21,11 @@ class RedisCommandTests: XCTestCase {
             do {
                 let con = try Connection(loop: loop!)
                 
-                con.on(.Connect) { result in
+                con.on(.connect) { result in
                     XCTAssert(true)
                 }
                 
-                con.on(.Disconnect) { result in
+                con.on(.disconnect) { result in
                     done()
                 }
                 
@@ -51,14 +51,14 @@ class RedisCommandTests: XCTestCase {
                 
                 Redis.command(con, command: .PING) { result in
                     
-                    if case .Success(let reply) = result {
+                    if case .success(let reply) = result {
                         XCTAssertEqual(reply as? String, "PONG")
                     }
                 
                     Redis.close(con)
                 }
                 
-                con.on(.Disconnect) { result in
+                con.on(.disconnect) { result in
                     done()
                 }
                 
@@ -79,22 +79,22 @@ class RedisCommandTests: XCTestCase {
                 let con = try Connection(loop: loop!)
                 
                 Redis.command(con, command: .SET(key, "foobar")) { result in
-                    if case .Success(let rep) = result {
+                    if case .success(let rep) = result {
                         XCTAssertEqual(rep as? String, "OK")
                     }
                     Redis.command(con, command: .GET(key)) { result in
-                        if case .Success(let rep) = result {
+                        if case .success(let rep) = result {
                             XCTAssertEqual(rep as? String, "foobar")
                         }
                         Redis.command(con, command: .DEL([key])) { result in
-                            if case .Success(_) = result {
+                            if case .success(_) = result {
                                 Redis.close(con)
                             }
                         }
                     }
                 }
                 
-                con.on(.Disconnect) { result in
+                con.on(.disconnect) { result in
                     done()
                 }
                 
@@ -115,22 +115,22 @@ class RedisCommandTests: XCTestCase {
                 let con = try Connection(loop: loop!)
                 
                 Redis.command(con, command: .SET(key, "{\"foo\": \"bar\"}")) { result in
-                    if case .Success(let rep) = result {
+                    if case .success(let rep) = result {
                         XCTAssertEqual(rep as? String, "OK")
                     }
                     Redis.command(con, command: .GET(key)) { result in
-                        if case .Success(let rep) = result {
+                        if case .success(let rep) = result {
                             XCTAssertEqual(rep as? String, "{\"foo\": \"bar\"}")
                         }
                         Redis.command(con, command: .DEL([key])) { result in
-                            if case .Success(_) = result {
+                            if case .success(_) = result {
                                 Redis.close(con)
                             }
                         }
                     }
                 }
                 
-                con.on(.Disconnect) { result in
+                con.on(.disconnect) { result in
                     done()
                 }
                 
@@ -151,8 +151,8 @@ class RedisCommandTests: XCTestCase {
                 let con = try Connection(loop: loop!)
                 
                 Redis.command(con, command: .HSET("key", "foo", "bar")) { result in
-                    if case .Error(let err) = result {
-                        if case Error.UnImplemented = err {
+                    if case .error(let err) = result {
+                        if case SwiftRedisError.unImplemented = err {
                             done()
                         }
                     } else {
@@ -160,7 +160,7 @@ class RedisCommandTests: XCTestCase {
                     }
                 }
                 
-                con.on(.Disconnect) { result in
+                con.on(.disconnect) { result in
                     done()
                 }
                 

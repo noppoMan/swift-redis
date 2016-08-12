@@ -6,22 +6,19 @@
 //  Copyright © 2016 MikeTOKYO. All rights reserved.
 //
 
-enum Error: ErrorProtocol, CustomStringConvertible {
-    case ConnectionFailure(String)
-    case UnImplemented
-    case Unexpexted
-    case CommandFailure(String)
+enum SwiftRedisError: Error, CustomStringConvertible {
+    case connectionFailure(String)
+    case unImplemented
+    case commandFailure(String)
     
     var description: String {
         switch(self){
-        case .ConnectionFailure(let message):
+        case .connectionFailure(let message):
             return message
-        case .CommandFailure(let message):
+        case .commandFailure(let message):
             return message
-        case .UnImplemented:
+        case .unImplemented:
             return "UnImplemented"
-        case .Unexpexted:
-            return "Unexpexted"
         }
     }
 }

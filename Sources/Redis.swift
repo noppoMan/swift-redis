@@ -13,28 +13,30 @@ struct RedisContext {
     let autoRelease: Bool
     let onReply: (GenericResult<Any>) -> ()
     
-    init(autoRelease: Bool = true, onReply: (GenericResult<Any>) -> ()){
+    init(autoRelease: Bool = true, onReply: @escaping (GenericResult<Any>) -> ()){
         self.autoRelease = autoRelease
         self.onReply = onReply
     }
 }
 
-func redisCallbackFn(c: UnsafeMutablePointer<redisAsyncContext>?, r: UnsafeMutablePointer<Void>?, privdata: UnsafeMutablePointer<Void>?){
-    guard let r = r, privdata = privdata else {
+func redisCallbackFn(c: UnsafeMutablePointer<redisAsyncContext>?, r: UnsafeMutableRawPointer?, privdata: UnsafeMutableRawPointer?){
+    guard let r = r, let privdata = privdata else {
         return
     }
     
-    let ctx = UnsafeMutablePointer<RedisContext>(privdata)
+    
+    
+    let ctx = privdata.assumingMemoryBound(to: RedisContext.self)
     
     // TODO It still has memory leak when the command is 'SUBSCRIBE'
     defer {
         if ctx.pointee.autoRelease {
             ctx.deinitialize()
-            ctx.deallocateCapacity(1)
+            ctx.deallocate(capacity: 1)
         }
     }
     
-    let reply = UnsafeMutablePointer<redisReply>(r)
+    let reply = r.assumingMemoryBound(to: redisReply.self)
     let response: Any
     if reply.pointee.elements > 0 {
         var _response = [String]()
@@ -44,7 +46,9 @@ func redisCallbackFn(c: UnsafeMutablePointer<redisAsyncContext>?, r: UnsafeMutab
                 for i in stride(from: 0, to: Int(element.pointee.len), by: 1) {
                     bytes.append(UInt8(bitPattern: element.pointee.str[i]))
                 }
-                _response.append(String(bytes: bytes))
+                if let str = String(bytes: bytes) {
+                    _response.append(str)
+                }
             }
         }
         
@@ -55,30 +59,33 @@ func redisCallbackFn(c: UnsafeMutablePointer<redisAsyncContext>?, r: UnsafeMutab
             bytes.append(UInt8(bitPattern: reply.pointee.str[i]))
         }
         
-        let _response = String(bytes: bytes)
+        
+        guard let _response = String(bytes: bytes) else {
+            return ctx.pointee.onReply(.error(SwiftRedisError.commandFailure("No reply")))
+        }
         
         if reply.pointee.type == REDIS_REPLY_ERROR {
-            return ctx.pointee.onReply(.Error(Error.CommandFailure(_response)))
+            return ctx.pointee.onReply(.error(SwiftRedisError.commandFailure(_response)))
         }
         
         response = _response
     }
     
-    ctx.pointee.onReply(.Success(response))
+    ctx.pointee.onReply(.success(response))
 }
 
 public struct Redis {
     
-    public static func command(_ connection: Connection, command: Commands, completion: (GenericResult<Any>) -> () = { _ in}) {
+    public static func command(_ connection: Connection, command: Commands, completion: @escaping (GenericResult<Any>) -> () = { _ in}) {
         
         do {
             let cmd = try command.parse()
             if cmd.count == 0 {
-                throw Error.CommandFailure("Command should not be empty")
+                throw SwiftRedisError.commandFailure("Command should not be empty")
             }
             
-            let ctx = UnsafeMutablePointer<RedisContext>(allocatingCapacity: 1)
-            ctx.initialize(with: RedisContext(autoRelease: !command.isPermanent , onReply: completion))
+            let ctx = UnsafeMutablePointer<RedisContext>.allocate(capacity: 1)
+            ctx.initialize(to: RedisContext(autoRelease: !command.isPermanent , onReply: completion))
             
             let privdata = UnsafeMutablePointer<Void>(ctx)
             
@@ -87,12 +94,12 @@ public struct Redis {
                 redisCallbackFn,
                 UnsafeMutablePointer(privdata),
                 Int32(cmd.count),
-                UnsafeMutablePointer(cmd.map { $0.buffer }),
+                UnsafeMutablePointer(mutating: cmd.map { $0.buffer }),
                 nil
             )
             
         } catch {
-            completion(.Error(error))
+            completion(.error(error))
         }
     }
     

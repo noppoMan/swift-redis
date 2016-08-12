@@ -24,4 +24,4 @@ release:
 	$(SWIFT) build -v $(BUILDOPTS) --configuration=release
 
 test:
-	$(SWIFT) test
+	$(SWIFT) test $(BUILDOPTS)

@@ -15,8 +15,8 @@ private struct Context {
 }
 
 public enum ConnectionEvent {
-    case Connect
-    case Disconnect
+    case connect
+    case disconnect
 }
 
 public struct Connection {
@@ -27,45 +27,46 @@ public struct Connection {
 
         if ctx.pointee.err > 0 {
             let message = String(validatingUTF8: ctx.pointee.errstr)!
-            throw Error.ConnectionFailure(message)
+            throw SwiftRedisError.connectionFailure(message)
         }
         
         // atach loop
         redisLibuvAttach(ctx, loop)
         
-        let _ctx = UnsafeMutablePointer<Context>(allocatingCapacity: 1)
-        _ctx.initialize(with: Context())
-        ctx.pointee.data = UnsafeMutablePointer(_ctx)
+        let _ctx = UnsafeMutablePointer<Context>.allocate(capacity: 1)
+        _ctx.initialize(to: Context())
+        ctx.pointee.data = UnsafeMutableRawPointer(_ctx)
     }
     
-    public func on(_ evt: ConnectionEvent, callback: (Result) -> ()) {
+    public func on(_ evt: ConnectionEvent, callback: @escaping (Result) -> ()) {
         switch(evt) {
-        case .Connect:
-            UnsafeMutablePointer<Context>(ctx.pointee.data).pointee.onConnect = callback
+        case .connect:
+            ctx.pointee.data.assumingMemoryBound(to: Context.self).pointee.onConnect = callback
             redisAsyncSetConnectCallback(ctx) { context, status in
-                if let context = context, ctx = UnsafeMutablePointer<Context>(context.pointee.data) {
+                if let context = context {
+                    let ctx = context.pointee.data.assumingMemoryBound(to: Context.self)
                     if status != REDIS_OK {
-                        let error = Error.ConnectionFailure(String(validatingUTF8: context.pointee.errstr)!)
-                        return ctx.pointee.onConnect(.Error(error))
+                        let error = SwiftRedisError.connectionFailure(String(validatingUTF8: context.pointee.errstr)!)
+                        return ctx.pointee.onConnect(.error(error))
                     }
-                    ctx.pointee.onConnect(.Success)
+                    ctx.pointee.onConnect(.success)
                 }
             }
-        case .Disconnect:
-            UnsafeMutablePointer<Context>(ctx.pointee.data).pointee.onDisconnect = callback
+        case .disconnect:
+            ctx.pointee.data.assumingMemoryBound(to: Context.self).pointee.onDisconnect = callback
             redisAsyncSetDisconnectCallback(ctx) { context, status in
-                if let context = context, ctx = UnsafeMutablePointer<Context>(context.pointee.data) {
+                if let context = context {
+                    let ctx = context.pointee.data.assumingMemoryBound(to: Context.self)
                     // release context
                     defer {
-                        context.pointee.data.deinitialize()
-                        context.pointee.data.deallocateCapacity(1)
+                        context.pointee.data.deallocate(bytes: 1, alignedTo: 1)
                     }
                     
                     if status != REDIS_OK {
-                        let error = Error.ConnectionFailure(String(validatingUTF8: context.pointee.errstr)!)
-                        return ctx.pointee.onDisconnect(.Error(error))
+                        let error = SwiftRedisError.connectionFailure(String(validatingUTF8: context.pointee.errstr)!)
+                        return ctx.pointee.onDisconnect(.error(error))
                     }
-                    ctx.pointee.onDisconnect(.Success)
+                    ctx.pointee.onDisconnect(.success)
                 }
             }
         }

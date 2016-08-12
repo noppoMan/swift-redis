@@ -156,7 +156,7 @@ extension Commands {
         case .RAW(let command):
             cmd = command
         default:
-            throw Error.UnImplemented
+            throw SwiftRedisError.unImplemented
         }
         
         return cmd
